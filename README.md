@@ -30,3 +30,8 @@ python manage.py migrate
 ```bash
 python manage.py runserver
 ```
+
+
+```bash
+Open browser and type: 127.0.0.1:8000
+```
