@@ -8,7 +8,7 @@ from .forms import PhotoForm
 from .models import Photo
 import os, sys
 from django.conf import settings
-from mysite.utils import util
+from mysite.utils import util, constants
 
 class ProgressBarUploadView(View):
     def get(self, request):
@@ -18,7 +18,7 @@ class ProgressBarUploadView(View):
         for dirpath, dirnames, filenames in os.walk(path):
             for f in filenames:
                 file_path =  os.path.join(dirpath, f) 
-                file_dir = {f:file_path.split("/multiple-file-upload")[-1]}
+                file_dir = {f: constants.RELATIVE_PATH + file_path.split("/media")[-1]}
                 media_paths = util.get_path_dict_from_path(dirpath, media_paths, file_dir)                
         print media_paths
         photos_list = Photo.objects.all()
