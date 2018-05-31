@@ -1,0 +1,71 @@
+{% extends 'photos/base.html' %}
+
+{% load static %}
+
+{% block title %}Bulk Upload{% endblock %}
+
+{% block javascript %}
+  {# JQUERY FILE UPLOAD SCRIPTS #}
+  <script src="{% static 'js/jquery-file-upload/vendor/jquery.ui.widget.js' %}"></script>
+  <script src="{% static 'js/jquery-file-upload/jquery.iframe-transport.js' %}"></script>
+  <script src="{% static 'js/jquery-file-upload/jquery.fileupload.js' %}"></script>
+
+  {# PHOTOS PAGE SCRIPTS #}
+  <script src="{% static 'photos/js/progress-bar-upload.js' %}"></script>
+{% endblock %}
+
+{% block photos_content %}
+  <div style="margin-bottom: 20px;">
+    <button type="button" class="btn btn-primary js-upload-photos">
+      <span class="glyphicon glyphicon-cloud-upload"></span> Upload Media
+    </button>
+    <input id="fileupload" type="file" name="file" multiple
+           style="display: none;"
+           data-url="{% url 'photos:upload' %}"
+           data-form-data='{"csrfmiddlewaretoken": "{{ csrf_token }}"}'>
+  </div>
+
+  <table id="gallery" class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Photo</th>
+      </tr>
+    </thead>
+    <tbody>
+      <td>
+      {% for year, year_value in media_paths.items %}
+        {{year}}        
+        {% for month, month_value in year_value.items %}
+          <br/>&ensp;&ensp;|--{{month}}
+            {% for day, day_value in month_value.items %}
+              <br/>&ensp;&ensp;&ensp;&ensp;|--{{day}}
+                {% for media_type, media_files in day_value.items %}
+                <br/>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;|--{{media_type}}
+                    {% for file in media_files %}
+                      {% for filename, url in file.items %}
+                        <br/>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;|--<a href="{{ url }}">{{ filename }}</a>
+                      {% endfor %}
+                    {% endfor %}
+                {% endfor %}
+            {% endfor %}
+        {% endfor %}
+      {% endfor %}
+      </td>
+    </tbody>
+  </table>
+
+  <div class="modal fade" id="modal-progress" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Uploading...</h4>
+        </div>
+        <div class="modal-body">
+          <div class="progress">
+            <div class="progress-bar" role="progressbar" style="width: 0%;">0%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
